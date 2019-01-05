@@ -4,8 +4,6 @@ public class Vector {
 
     public double x, y, z;
 
-    protected double array[];
-
     public Vector() {
 
     }
@@ -224,11 +222,6 @@ public class Vector {
         double bmag = Math.sqrt(Math.pow(b.x, 2) + Math.pow(b.y, 2) + Math.pow(b.z, 2));
         return Math.acos(dot / (amag * bmag));
     }
-
-
-
-
-
 
 
 }

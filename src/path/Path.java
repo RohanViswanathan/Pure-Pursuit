@@ -1,11 +1,12 @@
 package path;
 
 import math.Vector;
+import operation.Constants;
 import operation.Range;
 import operation.Sign;
 
 import java.util.ArrayList;
-import java.util.NavigableMap;
+
 
 public class Path {
 
@@ -187,6 +188,15 @@ public class Path {
         double side = Sign.getSign(cross);
         double curvature = (2 * x)/(Math.pow(lookaheadDistance, 2));
         return curvature * side;
+    }
+
+    public double getLeftTargetVelocity(double targetRobotVelocity, double curvature) { //target velocity is from closest point on path
+        return targetRobotVelocity * ((2 + (Constants.robotTrack * curvature)))/2;
+    }
+
+
+    public double getRightTargetVelocity(double targetRobotVelocity, double curvature) {
+        return targetRobotVelocity * ((2 - (Constants.robotTrack * curvature)))/2;
     }
 
 

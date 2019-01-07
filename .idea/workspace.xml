@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27565d80-429e-48df-8209-71feec2965cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/operation/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/operation/Range.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/operation/Sign.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/math/Vector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/Vector.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/Path.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/Path.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -39,12 +34,12 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="4" />
-          <entry key="java" value="8072" />
+          <entry key="java" value="8248" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="8072" />
+          <entry key="JAVA" value="8248" />
           <entry key="PLAIN_TEXT" value="4" />
         </counts>
       </usages-collector>
@@ -91,8 +86,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/path/Path.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="191" lean-forward="true" selection-start-line="191" selection-end-line="191" />
+            <state relative-caret-position="120">
+              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#250#251#0" expanded="true" />
@@ -153,8 +148,8 @@
         <option value="$PROJECT_DIR$/src/math/Vector.java" />
         <option value="$PROJECT_DIR$/src/operation/Range.java" />
         <option value="$PROJECT_DIR$/src/operation/Sign.java" />
-        <option value="$PROJECT_DIR$/src/path/Path.java" />
         <option value="$PROJECT_DIR$/src/operation/Constants.java" />
+        <option value="$PROJECT_DIR$/src/path/Path.java" />
       </list>
     </option>
   </component>
@@ -215,7 +210,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546851855455" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546852401512" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -363,8 +358,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/path/Path.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="191" lean-forward="true" selection-start-line="191" selection-end-line="191" />
+        <state relative-caret-position="120">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#250#251#0" expanded="true" />

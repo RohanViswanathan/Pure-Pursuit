@@ -79,4 +79,20 @@ public class Path {
         return distance;
     }
 
+    public double calculateCurvature(ArrayList<Vector> path, int point) {
+        Vector pt = new Vector(path.get(point));
+        Vector prevPt = new Vector(path.get(point - 1));
+        Vector nextPt = new Vector(path.get(point + 1));
+
+        double productOfSides = Vector.dist(pt, prevPt) * Vector.dist(pt, nextPt) * Vector.dist(nextPt, prevPt);
+        double semiPerimeter = (Vector.dist(pt, prevPt) + Vector.dist(pt, nextPt) + Vector.dist(nextPt, prevPt))/2;
+        double triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - Vector.dist(pt, prevPt)) * (semiPerimeter - Vector.dist(pt, nextPt)) * (semiPerimeter - Vector.dist(nextPt, prevPt)));
+
+        double radius = (productOfSides)/(4 * triangleArea);
+        double curvature = 1/radius;
+
+        return curvature;
+
+    }
+
 }

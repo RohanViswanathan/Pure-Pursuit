@@ -3,6 +3,7 @@ package math;
 public class Vector {
 
     public double x, y, z;
+    public double velocity;
 
     public Vector() {
 
@@ -12,24 +13,35 @@ public class Vector {
         this.x = x;
         this.y = y;
         this.z = z;
+        velocity = 0;
     }
 
     public Vector(double x, double y) {
         this.x = x;
         this.y = y;
         this.z = 0;
+        velocity = 0;
     }
 
     public Vector(Vector v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
+        velocity = 0;
     }
 
     public void set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
+    }
+
+    public double getVelocity() {
+        return velocity;
     }
 
     public Vector get() {

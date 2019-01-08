@@ -2,27 +2,27 @@ package path;
 
 import math.Vector;
 import operation.Constants;
-import operation.Range;
 import operation.Sign;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Path {
 
-    double spacing = 6; //spacing between points
-    double distance;
-    ArrayList<Vector> newPoints = new ArrayList<>();
-    double prevTime = 0;
-    double output = 0;
-    double prevOutput = 0;
-    int lastClosestPt = 0;
+    double spacing = Constants.spacing; //spacing between points in inches
+    double distance; //in inches
+    double a, b, tolerance;
+    ArrayList<Vector> robotPath = new ArrayList<>();
 
-    public Path() {
+    public Path(double a, double b, double tolerance) {
+        this.a = a;
+        this.b = b;
+        this.tolerance = tolerance;
         distance = 0;
     }
 
-    public void injectPoints(Vector startPt, Vector endPt) {
+    public void injectPoints(Vector startPt, Vector endPt, ArrayList<Vector> temp) {
 
         Vector vector = new Vector(Vector.sub(startPt, endPt, null));
         double num_pts_that_fit = Math.ceil(vector.norm() / spacing);
@@ -30,10 +30,9 @@ public class Path {
         vector.mult(spacing);
         for (int i = 0; i < num_pts_that_fit; i++) {
             vector.mult(i);
-            newPoints.add(Vector.add(startPt, vector, null));
+            temp.add(Vector.add(startPt, vector, null));
         }
-        newPoints.add(endPt);
-
+        temp.add(endPt);
     }
 
     public double [][] makeArray(ArrayList<Vector> pts) {
@@ -58,9 +57,16 @@ public class Path {
         return path;
     }
 
+    public double [][] doubleArrayCopy(double [][] array) {
+        double [][] newArray = new double[array.length][];
+        for(int i = 0; i < array.length; i++)
+            newArray[i] = Arrays.copyOf(array[i], array[i].length);
+        return newArray;
+    }
+
     public double [][] smooth(double [][] path, double a, double b, double tolerance) {
 
-        double [][] newPath = path;
+        double [][] newPath = doubleArrayCopy(path);
         double change = tolerance;
 
         while (change >= 0) {
@@ -78,14 +84,20 @@ public class Path {
 
     }
 
-    public double getCurrDistance(ArrayList<Vector> path, int point) {
-        double distance = 0;
-        for (int i = point; i >= 0; i--) {
-             distance += Vector.dist(path.get(i), path.get(i - 1));
+    public void setCurvature(ArrayList<Vector> path) {
+        for (int i = 0; i < path.size(); i++){
+            path.get(i).setCurvature(calculatePathCurvature(path, i));
         }
-
-        return distance;
     }
+
+    public Vector getStartPoint(int index) {
+        return robotPath.get(index);
+    }
+
+    public Vector getEndPoint(int index) {
+        return robotPath.get(index + 1);
+    }
+
 
     public double calculatePathCurvature(ArrayList<Vector> path, int point) {
         Vector pt = new Vector(path.get(point));
@@ -117,69 +129,7 @@ public class Path {
     }
 
 
-    public double rateLimiter(double input, double maxRate, double systemTime) {
-        double deltaTime = systemTime - prevTime;
-        double maxChange = deltaTime * maxRate;
-        output += Range.clip(input - prevOutput, -maxChange, maxChange);
-        prevOutput = output;
-        prevTime = systemTime;
-        return output;
-    }
-
-    public int getClosestPoint(Vector currPos, ArrayList<Vector> path) {
-        double shortestDistance = 100000000;
-        int closestPoint = 0;
-        for (int i = lastClosestPt; i < path.size(); i++) {
-            if (Vector.dist(path.get(i), currPos) < shortestDistance) {
-                closestPoint = i;
-                shortestDistance = Vector.dist(path.get(i), currPos);
-            }
-        }
-        lastClosestPt = closestPoint;
-        return closestPoint;
-
-    }
-
-    public double calcIntersectionPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance) {
-
-        Vector d = Vector.sub(endPoint, startPoint);
-        Vector f = Vector.sub(startPoint, currPos);
-
-        double a = d.dot(d);
-        double b = 2*f.dot(d);
-        double c = f.dot(f) - Math.pow(lookaheadDistance, 2);
-        double discriminant = Math.pow(b, 2) - (4 * a * c);
-
-        if (discriminant < 0 ){
-            return 0;
-        }
-
-        else {
-            discriminant = Math.sqrt(discriminant);
-            double t1 = (-b - discriminant)/(2 * a);
-            double t2 = (-b + discriminant)/(2 * a);
-
-            if (t1 >= 0 && t1 <= 1) {
-                System.out.println("t1");
-                return t1;
-            }
-            if (t2 >= 0 && t2 <= 1) {
-                System.out.println("t2");
-                return t2;
-            }
-
-        }
-
-        return 0;
-    }
-
-    public Vector calcVectorLookAheadPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance) {
-        double tIntersect = calcIntersectionPoint(startPoint, endPoint, currPos, lookaheadDistance);
-        Vector point = Vector.add(startPoint, Vector.mult(Vector.sub(endPoint, startPoint, null), tIntersect));
-        return point;
-    }
-
-    public double calcCurvatureLookAheadArc(Vector currPos, double heading, Vector lookahead, double lookaheadDistance) {
+    public double calculateCurvatureLookAheadArc(Vector currPos, double heading, Vector lookahead, double lookaheadDistance) {
         double a = -Math.tan(heading);
         double b = 1;
         double c = (Math.tan(heading)*currPos.x) - currPos.y;
@@ -190,24 +140,26 @@ public class Path {
         return curvature * side;
     }
 
-    public double getLeftTargetVelocity(double targetRobotVelocity, double curvature) { //target velocity is from closest point on path
-        return targetRobotVelocity * ((2 + (Constants.robotTrack * curvature)))/2;
-    }
 
-
-    public double getRightTargetVelocity(double targetRobotVelocity, double curvature) {
-        return targetRobotVelocity * ((2 - (Constants.robotTrack * curvature)))/2;
+    public void addSegment(Vector start, Vector end) {
+        ArrayList<Vector> injectTemp = new ArrayList<>();
+        injectPoints(start, end, injectTemp);
+        ArrayList<Vector> smoothTemp = makeList(smooth(makeArray(injectTemp), a, b, tolerance));
+        for (int i = robotPath.size()-1; i < robotPath.size() + smoothTemp.size() - 2; i++) {
+            robotPath.add(smoothTemp.get(i));
+        }
     }
 
 
     public static void main (String[] args) {
-        Path path = new Path();
+        Path p = new Path(1, 2, 3);
+        PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 5);
         Vector start = new Vector(1,3);
         Vector end = new Vector(3,9);
         Vector currPos = new Vector(-3, 5);
         //System.out.print(path.calcIntersectionPoint(start, end, currPos, 5));
-        System.out.print(path.calcVectorLookAheadPoint(start, end, currPos, 5).x);
-        System.out.print(path.calcVectorLookAheadPoint(start, end, currPos, 5).y);
+        System.out.print(purePursuitTracker.calcVectorLookAheadPoint(start, end, currPos, 5).x);
+        System.out.print(purePursuitTracker.calcVectorLookAheadPoint(start, end, currPos, 5).y);
 
     }
 

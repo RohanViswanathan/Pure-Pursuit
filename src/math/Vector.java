@@ -4,6 +4,7 @@ public class Vector {
 
     public double x, y, z;
     public double velocity;
+    public double curvature;
 
     public Vector() {
 
@@ -14,6 +15,7 @@ public class Vector {
         this.y = y;
         this.z = z;
         velocity = 0;
+        curvature = 0;
     }
 
     public Vector(double x, double y) {
@@ -21,13 +23,15 @@ public class Vector {
         this.y = y;
         this.z = 0;
         velocity = 0;
+        curvature = 0;
     }
 
     public Vector(Vector v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
-        velocity = 0;
+        this.velocity = v.velocity;
+        this.curvature = v.curvature;
     }
 
     public void set(double x, double y, double z) {
@@ -42,6 +46,14 @@ public class Vector {
 
     public double getVelocity() {
         return velocity;
+    }
+
+    public double getCurvature() {
+        return curvature;
+    }
+
+    public void setCurvature(double curvature) {
+        this.curvature = curvature;
     }
 
     public Vector get() {
@@ -65,7 +77,7 @@ public class Vector {
     }
 
 
-    static public Vector add(Vector a, Vector b, Vector target) {
+    public static Vector add(Vector a, Vector b, Vector target) {
         if (target == null) {
             target = new Vector(a.x + b.x, a.y + b.y, a.z + b.z);
         }
@@ -75,7 +87,7 @@ public class Vector {
         return target;
     }
 
-    static public Vector add(Vector a, Vector b) {
+    public static Vector add(Vector a, Vector b) {
         return add(a, b, null);
     }
 
@@ -91,7 +103,7 @@ public class Vector {
         this.z -= z;
     }
 
-    static public Vector sub(Vector a, Vector b, Vector target) {
+    public static Vector sub(Vector a, Vector b, Vector target) {
         if (target == null) {
             target = new Vector(a.x - b.x, a.y - b.y, a.z - b.z);
         }
@@ -101,7 +113,7 @@ public class Vector {
         return target;
     }
 
-    static public Vector sub(Vector a, Vector b) {
+    public static Vector sub(Vector a, Vector b) {
         return sub(a, b, null);
     }
 
@@ -111,7 +123,7 @@ public class Vector {
         z *= n;
     }
 
-    static public Vector mult(Vector a, double n, Vector target) {
+    public static Vector mult(Vector a, double n, Vector target) {
         if (target == null) {
             target = new Vector(a.x*n, a.y*n, a.z*n);
         } else {
@@ -120,7 +132,7 @@ public class Vector {
         return target;
     }
 
-    static public Vector mult(Vector a, double n) {
+    public static Vector mult(Vector a, double n) {
         return mult(a, n, null);
     }
 
@@ -130,7 +142,7 @@ public class Vector {
         z *= a.z;
     }
 
-    static public Vector mult(Vector a, Vector b, Vector target) {
+    public static Vector mult(Vector a, Vector b, Vector target) {
         if (target == null) {
             target = new Vector(a.x*b.x, a.y*b.y, a.z*b.z);
         } else {
@@ -139,7 +151,7 @@ public class Vector {
         return target;
     }
 
-    static public Vector mult(Vector a, Vector b) {
+    public static Vector mult(Vector a, Vector b) {
         return mult(a, b, null);
     }
 
@@ -149,7 +161,7 @@ public class Vector {
         z /= n;
     }
 
-    static public Vector div(Vector a, float n, Vector target) {
+    public static Vector div(Vector a, float n, Vector target) {
         if (target == null) {
             target = new Vector(a.x/n, a.y/n, a.z/n);
         } else {
@@ -158,7 +170,7 @@ public class Vector {
         return target;
     }
 
-    static public Vector div(Vector a, float n) {
+    public static Vector div(Vector a, float n) {
         return div(a, n, null);
     }
 
@@ -168,7 +180,7 @@ public class Vector {
         z /= a.z;
     }
 
-    static public Vector div(Vector a, Vector b, Vector target) {
+    public static Vector div(Vector a, Vector b, Vector target) {
         if (target == null) {
             target = new Vector(a.x/b.x, a.y/b.y, a.z/b.z);
         } else {
@@ -177,7 +189,7 @@ public class Vector {
         return target;
     }
 
-    static public Vector div(Vector a, Vector b) {
+    public Vector div(Vector a, Vector b) {
         return div(a, b, null);
     }
 

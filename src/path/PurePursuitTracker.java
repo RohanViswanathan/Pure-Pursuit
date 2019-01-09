@@ -4,40 +4,52 @@ import math.Vector;
 import operation.Constants;
 import operation.Range;
 
-import java.util.ArrayList;
-
 public class PurePursuitTracker {
 
     private Path p;
-    double output = 0;
-    double prevOutput = 0;
-    int lastClosestPt = 0; //index in ArrayList
-    Vector currPos = new Vector(0, 0);
-    double currVel = 0;
-    double lookaheadDistance;
+    private double output = 0;
+    private double prevOutput = 0;
+    private int lastClosestPt = 0; //index in ArrayList
+    private Vector currPos = new Vector(0, 0);
+    private double stopDistance;
+    private double lookaheadDistance;
 
 
-    public PurePursuitTracker(Path p, double lookaheadDistance) {
+    public PurePursuitTracker(Path p, double lookaheadDistance, double stopDistance) {
         this.p = p;
         this.lookaheadDistance = lookaheadDistance;
+        this.stopDistance = stopDistance;
     }
 
-    public double calculateFeedForward(double targetVel, double currVel, double currTime) {
+    public double calculateFeedForward(double targetVel, double currVel) {
         double targetAcc = (targetVel - currVel)/(Constants.loopTime);
-        return (Constants.kV * targetVel) + (Constants.kA * targetAcc);
+        return (Constants.kV * rateLimiter(targetVel, Constants.maxAccel)) + (Constants.kA * targetAcc);
     }
 
     public double calculateFeedback(double targetVel, double currVel) {
         return Constants.kP * (targetVel - currVel);
     }
 
-    public void update(Vector currPose, double currVel) {
+    public void update(Vector currPose, double currVel, double heading) {
         this.currPos = currPose;
-        this.currVel = currVel;
         Vector startPt = p.robotPath.get(getClosestPointIndex(currPos));
         Vector endPt = p.robotPath.get(getClosestPointIndex(currPos) + 1);
         Vector lookaheadPt = calcVectorLookAheadPoint(startPt, endPt, currPos, lookaheadDistance);
-
+        double curvature = p.calculateCurvatureLookAheadArc(currPos, heading, lookaheadPt, lookaheadDistance);
+        double leftTargetVel = getLeftTargetVelocity(p.robotPath.get(getClosestPointIndex(currPos)).getVelocity(), curvature);
+        double rightTargetVel = getRightTargetVelocity(p.robotPath.get(getClosestPointIndex(currPos)).getVelocity(), curvature);
+        double rightFF = calculateFeedForward(rightTargetVel, currVel);
+        double leftFF = calculateFeedForward(leftTargetVel, currVel);
+        double rightFB = calculateFeedback(rightTargetVel, currVel);
+        double leftFB = calculateFeedback(leftTargetVel, currVel);
+        double rightOutput = rightFF + rightFB;
+        double leftOutput = leftFF + leftFB;
+        if (getTotalPathDistance() - getCurrDistance(getClosestPointIndex(currPos)) <= stopDistance) {
+            rightOutput = 0;
+            leftOutput = 0;
+        }
+        //run right motor to right output
+        //run left motor to left output
     }
 
     public double rateLimiter(double input, double maxRate) {
@@ -103,14 +115,24 @@ public class PurePursuitTracker {
     }
 
 
-    public double getCurrDistance(ArrayList<Vector> path, int point) {
+    public double getCurrDistance(int point) {
         double distance = 0;
         for (int i = point; i >= 1; i--) {
-            distance += Vector.dist(path.get(i), path.get(i - 1));
+            distance += Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
         }
 
         return distance;
     }
+
+    public double getTotalPathDistance() {
+        double distance = 0;
+        for (int i = p.robotPath.size()-1; i >= 1; i--) {
+            distance += Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
+        }
+
+        return distance;
+    }
+
 
     public double getLeftTargetVelocity(double targetRobotVelocity, double curvature) { //target velocity is from closest point on path
         return targetRobotVelocity * ((2 + (Constants.robotTrack * curvature)))/2;

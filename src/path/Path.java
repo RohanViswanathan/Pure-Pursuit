@@ -90,14 +90,6 @@ public class Path {
         }
     }
 
-    public Vector getStartPoint(int index) {
-        return robotPath.get(index);
-    }
-
-    public Vector getEndPoint(int index) {
-        return robotPath.get(index + 1);
-    }
-
 
     public double calculatePathCurvature(ArrayList<Vector> path, int point) {
         Vector pt = new Vector(path.get(point));

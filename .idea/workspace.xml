@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27565d80-429e-48df-8209-71feec2965cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/path/PurePursuitTracker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/math/Vector.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Pure-Pursuit/math/Vector.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/path/Path.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Pure-Pursuit/path/Path.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/math/Vector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/Vector.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/operation/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/operation/Constants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/Path.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/Path.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/path/PurePursuitTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/PurePursuitTracker.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -42,12 +39,12 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="4" />
-          <entry key="java" value="11130" />
+          <entry key="java" value="11828" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="11130" />
+          <entry key="JAVA" value="11828" />
           <entry key="PLAIN_TEXT" value="4" />
         </counts>
       </usages-collector>
@@ -98,14 +95,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/path/Path.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="155" column="75" selection-start-line="155" selection-start-column="75" selection-end-line="155" selection-end-column="75" />
+            <state relative-caret-position="265">
+              <caret line="132" column="5" selection-start-line="132" selection-start-column="5" selection-end-line="132" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2669#2670#0" expanded="true" />
-                <element signature="e#2699#2700#0" expanded="true" />
-                <element signature="e#2769#2770#0" expanded="true" />
-                <element signature="e#2806#2807#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -119,12 +112,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/path/PurePursuitTracker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="110" lean-forward="true" selection-start-line="110" selection-end-line="110" />
+            <state relative-caret-position="60">
+              <caret line="4" column="23" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#651#652#0" expanded="true" />
-                <element signature="e#699#700#0" expanded="true" />
+                <element signature="e#822#823#0" expanded="true" />
+                <element signature="e#882#883#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -133,8 +126,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/operation/Constants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="75" selection-start-line="9" selection-start-column="75" selection-end-line="9" selection-end-column="75" />
+            <state relative-caret-position="150">
+              <caret line="10" column="69" selection-start-line="10" selection-start-column="69" selection-end-line="10" selection-end-column="69" />
             </state>
           </provider>
         </entry>
@@ -172,7 +165,9 @@
       <find>newPoints</find>
       <find>prevTime</find>
       <find>distance</find>
+      <find>currVel</find>
       <find>g</find>
+      <find>maxAcc</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -187,8 +182,8 @@
         <option value="$PROJECT_DIR$/src/math/Waypoint.java" />
         <option value="$PROJECT_DIR$/src/math/Vector.java" />
         <option value="$PROJECT_DIR$/src/operation/Constants.java" />
-        <option value="$PROJECT_DIR$/src/path/PurePursuitTracker.java" />
         <option value="$PROJECT_DIR$/src/path/Path.java" />
+        <option value="$PROJECT_DIR$/src/path/PurePursuitTracker.java" />
       </list>
     </option>
   </component>
@@ -250,7 +245,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/rohanviswanathan/Documents/Github/Pure-Pursuit/src/path/PurePursuitTracker.java" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546909195240" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547002896046" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -397,6 +392,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Pure-Pursuit.iml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/odometry/PoseEstimator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="23" lean-forward="true" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
+          <folding>
+            <element signature="e#120#121#0" expanded="true" />
+            <element signature="e#157#158#0" expanded="true" />
+            <element signature="e#447#448#0" expanded="true" />
+            <element signature="e#476#477#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/math/Vector.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="569">
@@ -420,51 +431,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Pure-Pursuit.iml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/operation/Constants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="75" selection-start-line="9" selection-start-column="75" selection-end-line="9" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/odometry/PoseEstimator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="23" lean-forward="true" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
-          <folding>
-            <element signature="e#120#121#0" expanded="true" />
-            <element signature="e#157#158#0" expanded="true" />
-            <element signature="e#447#448#0" expanded="true" />
-            <element signature="e#476#477#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="150">
+          <caret line="10" column="69" selection-start-line="10" selection-start-column="69" selection-end-line="10" selection-end-column="69" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/path/Path.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="155" column="75" selection-start-line="155" selection-start-column="75" selection-end-line="155" selection-end-column="75" />
+        <state relative-caret-position="265">
+          <caret line="132" column="5" selection-start-line="132" selection-start-column="5" selection-end-line="132" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2669#2670#0" expanded="true" />
-            <element signature="e#2699#2700#0" expanded="true" />
-            <element signature="e#2769#2770#0" expanded="true" />
-            <element signature="e#2806#2807#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/path/PurePursuitTracker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="110" lean-forward="true" selection-start-line="110" selection-end-line="110" />
+        <state relative-caret-position="60">
+          <caret line="4" column="23" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="23" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#651#652#0" expanded="true" />
-            <element signature="e#699#700#0" expanded="true" />
+            <element signature="e#822#823#0" expanded="true" />
+            <element signature="e#882#883#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -8,5 +8,6 @@ public class Constants {
     public static final double kA = 0; //0.002
     public static final double kP = 0; //0.01
     public static final double loopTime = 1/200; //how often Looper updates
+    public static final double maxAccel = 0; //max robot acceleration
 
 }

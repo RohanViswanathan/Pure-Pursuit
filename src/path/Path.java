@@ -22,7 +22,7 @@ public class Path {
         distance = 0;
     }
 
-    public void injectPoints(Vector startPt, Vector endPt, ArrayList<Vector> temp) {
+    private void injectPoints(Vector startPt, Vector endPt, ArrayList<Vector> temp) {
 
         Vector vector = new Vector(Vector.sub(startPt, endPt, null));
         double num_pts_that_fit = Math.ceil(vector.norm() / spacing);
@@ -35,7 +35,7 @@ public class Path {
         temp.add(endPt);
     }
 
-    public double [][] makeArray(ArrayList<Vector> pts) {
+    private double [][] makeArray(ArrayList<Vector> pts) {
 
         double [][] path = new double [2][pts.size()];
         for (int i = 0; i < pts.size(); i++) {
@@ -47,7 +47,7 @@ public class Path {
 
     }
 
-    public ArrayList<Vector> makeList(double [][] pts) {
+    private ArrayList<Vector> makeList(double [][] pts) {
 
         ArrayList<Vector> path = new ArrayList<>();
         for (int i = 0; i < pts[0].length; i ++){
@@ -57,14 +57,14 @@ public class Path {
         return path;
     }
 
-    public double [][] doubleArrayCopy(double [][] array) {
+    private double [][] doubleArrayCopy(double [][] array) {
         double [][] newArray = new double[array.length][];
         for(int i = 0; i < array.length; i++)
             newArray[i] = Arrays.copyOf(array[i], array[i].length);
         return newArray;
     }
 
-    public double [][] smooth(double [][] path, double a, double b, double tolerance) {
+    private double [][] smooth(double [][] path, double a, double b, double tolerance) {
 
         double [][] newPath = doubleArrayCopy(path);
         double change = tolerance;
@@ -84,14 +84,14 @@ public class Path {
 
     }
 
-    public void setCurvature(ArrayList<Vector> path) {
-        for (int i = 0; i < path.size(); i++){
-            path.get(i).setCurvature(calculatePathCurvature(path, i));
+    public void setCurvature() {
+        for (int i = 0; i < robotPath.size(); i++){
+            robotPath.get(i).setCurvature(calculatePathCurvature(robotPath, i));
         }
     }
 
 
-    public double calculatePathCurvature(ArrayList<Vector> path, int point) {
+    private double calculatePathCurvature(ArrayList<Vector> path, int point) {
         Vector pt = new Vector(path.get(point));
         Vector prevPt = new Vector(path.get(point - 1));
         Vector nextPt = new Vector(path.get(point + 1));
@@ -106,17 +106,17 @@ public class Path {
         return curvature;
     }
 
-    public double calculateMaxVelocity(ArrayList<Vector> path, int point, double pathMaxVel, double k) {
+    private double calculateMaxVelocity(ArrayList<Vector> path, int point, double pathMaxVel, double k) {
         double curvature = calculatePathCurvature(path, point);
         return Math.min(pathMaxVel, k/curvature); //k is a constant (generally between 1-5 based on how quickly you want to make the turn)
     }
 
-    public void setTargetVelocities(ArrayList<Vector> path, double maxVel, double maxAccel, double k) {
-        path.get(path.size() - 1).setVelocity(0);
-        for (int i = path.size() - 2; i >= 0; i--) {
-            distance = Vector.dist(path.get(i+1), path.get(i));
-            double maxReachableVel = Math.sqrt(Math.pow(path.get(i+1).getVelocity(),2) + (2 * maxAccel * distance));
-            path.get(i).setVelocity(Math.min(calculateMaxVelocity(path, i, maxVel, k), maxReachableVel));
+    public void setTargetVelocities(double maxVel, double maxAccel, double k) {
+        robotPath.get(robotPath.size() - 1).setVelocity(0);
+        for (int i = robotPath.size() - 2; i >= 0; i--) {
+            distance = Vector.dist(robotPath.get(i+1), robotPath.get(i));
+            double maxReachableVel = Math.sqrt(Math.pow(robotPath.get(i+1).getVelocity(),2) + (2 * maxAccel * distance));
+            robotPath.get(i).setVelocity(Math.min(calculateMaxVelocity(robotPath, i, maxVel, k), maxReachableVel));
         }
     }
 
@@ -145,7 +145,7 @@ public class Path {
 
     public static void main (String[] args) {
         Path p = new Path(1, 2, 3);
-        PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 5);
+        PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 5, 0);
         Vector start = new Vector(1,3);
         Vector end = new Vector(3,9);
         Vector currPos = new Vector(-3, 5);

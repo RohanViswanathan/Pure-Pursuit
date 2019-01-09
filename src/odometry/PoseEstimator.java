@@ -6,8 +6,8 @@ public class PoseEstimator {
 
     Vector currPos;
 
-    public PoseEstimator(double startX, double startY) {
-        currPos = new Vector(startX, startY);
+    public PoseEstimator(Vector v) {
+        currPos = new Vector(v);
     }
 
     public void updatePose(double distance, double heading) {

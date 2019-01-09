@@ -108,7 +108,7 @@ public class PurePursuitTracker {
 
     }
 
-    private Vector calcVectorLookAheadPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance) {
+    public Vector calcVectorLookAheadPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance) {
         double tIntersect = calcIntersectionPoint(startPoint, endPoint, currPos, lookaheadDistance);
         Vector point = Vector.add(startPoint, Vector.mult(Vector.sub(endPoint, startPoint, null), tIntersect));
         return point;

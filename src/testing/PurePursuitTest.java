@@ -8,19 +8,21 @@ import path.PurePursuitTracker;
 
 public class PurePursuitTest {
 
-    Path p = new Path(Constants.a, Constants.b, Constants.tolerance);
-    PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 12, 3);
-    PoseEstimator poseEstimator = new PoseEstimator(new Vector(0,0));
 
     public void init() {
-        p.addSegment(new Vector(0,0), new Vector(0, 12));
-        p.setTargetVelocities(Constants.maxVel, Constants.maxAccel, Constants.maxVelk);
-        p.setCurvature();
     }
 
-    public void run() { //this would run in a Looper implemented class
+    public static void main(String[] args) { //this would run in a Looper implemented class
         //poseEstimator.updatePose((leftEncoderDist() + rightEncoderDist())/2, getAngle());
-        //purePursuitTracker.update(poseEstimator.getPose(), getCurrentVelocity(), getAngle());
+        //purePursuitTracker.update(poseEstimator.getPose(), currVel(), getAngle());
+        Path p = new Path(Constants.a, Constants.b, Constants.tolerance);
+        PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 12*15, 3);
+        PoseEstimator poseEstimator = new PoseEstimator(new Vector(0,0));
+        p.addSegment(new Vector(0,0), new Vector(0, 1000));
+        p.setTargetVelocities(Constants.maxVel, Constants.maxAccel, Constants.maxVelk);
+        p.setCurvature();
+        poseEstimator.updatePose(3, 20);
+        purePursuitTracker.update(poseEstimator.getPose(), 5*12, 20);
     }
 
 }

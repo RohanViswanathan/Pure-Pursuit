@@ -4,6 +4,7 @@ import math.Vector;
 import operation.Constants;
 import operation.Sign;
 
+import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,23 +25,23 @@ public class Path {
 
     private void injectPoints(Vector startPt, Vector endPt, ArrayList<Vector> temp) {
 
-        Vector vector = new Vector(Vector.sub(startPt, endPt, null));
+        Vector vector = new Vector(Vector.sub(endPt, startPt, null));
         double num_pts_that_fit = Math.ceil(vector.norm() / spacing);
-        vector.normalize();
-        vector.mult(spacing);
+        Vector unitVector = vector.normalize(null);
+        unitVector.mult(vector.norm() / num_pts_that_fit);
         for (int i = 0; i < num_pts_that_fit; i++) {
-            vector.mult(i);
-            temp.add(Vector.add(startPt, vector, null));
+            Vector newVector = Vector.mult(unitVector, i, null);
+            temp.add(Vector.add(startPt, newVector, null));
         }
         temp.add(endPt);
     }
 
     private double [][] makeArray(ArrayList<Vector> pts) {
 
-        double [][] path = new double [2][pts.size()];
+        double [][] path = new double [pts.size()][2];
         for (int i = 0; i < pts.size(); i++) {
-            path[0][i] = pts.get(i).x;
-            path[1][i] = pts.get(i).y;
+            path[i][0] = pts.get(i).x;
+            path[i][1] = pts.get(i).y;
         }
 
         return path;
@@ -50,8 +51,8 @@ public class Path {
     private ArrayList<Vector> makeList(double [][] pts) {
 
         ArrayList<Vector> path = new ArrayList<>();
-        for (int i = 0; i < pts[0].length; i ++){
-            path.add(new Vector(pts[0][i], pts[1][i]));
+        for (int i = 0; i < pts.length; i ++){
+            path.add(new Vector(pts[i][0], pts[i][1]));
         }
 
         return path;
@@ -64,7 +65,9 @@ public class Path {
         return newArray;
     }
 
-    private double [][] smooth(double [][] path, double a, double b, double tolerance) {
+    private ArrayList<Vector> smooth(ArrayList<Vector> vectorPath, double a, double b, double tolerance) {
+
+        double [][] path = makeArray(vectorPath);
 
         double [][] newPath = doubleArrayCopy(path);
         double change = tolerance;
@@ -79,13 +82,12 @@ public class Path {
                 }
             }
         }
-
-        return newPath;
+        return makeList(newPath);
 
     }
 
     public void setCurvature() {
-        for (int i = 0; i < robotPath.size(); i++){
+        for (int i = 1; i < robotPath.size()-1; i++){
             robotPath.get(i).setCurvature(calculatePathCurvature(robotPath, i));
         }
     }
@@ -107,8 +109,13 @@ public class Path {
     }
 
     private double calculateMaxVelocity(ArrayList<Vector> path, int point, double pathMaxVel, double k) {
-        double curvature = calculatePathCurvature(path, point);
-        return Math.min(pathMaxVel, k/curvature); //k is a constant (generally between 1-5 based on how quickly you want to make the turn)
+        if (point > 0) {
+
+            double curvature = calculatePathCurvature(path, point);
+            return Math.min(pathMaxVel, k/curvature); //k is a constant (generally between 1-5 based on how quickly you want to make the turn)
+
+        }
+        return pathMaxVel;
     }
 
     public void setTargetVelocities(double maxVel, double maxAccel, double k) {
@@ -136,22 +143,34 @@ public class Path {
     public void addSegment(Vector start, Vector end) {
         ArrayList<Vector> injectTemp = new ArrayList<>();
         injectPoints(start, end, injectTemp);
-        ArrayList<Vector> smoothTemp = makeList(smooth(makeArray(injectTemp), a, b, tolerance));
-        for (int i = robotPath.size()-1; i < robotPath.size() + smoothTemp.size() - 2; i++) {
-            robotPath.add(smoothTemp.get(i));
+        System.out.println(injectTemp);
+        //ArrayList<Vector> smoothTemp = smooth(injectTemp, a, b, tolerance);
+        //System.out.println(smoothTemp.size());
+        if (robotPath.size() == 0) {
+            for (int i = 0; i < injectTemp.size(); i++) {
+                robotPath.add(injectTemp.get(i));
+            }
         }
+        else {
+            for (int i = 0; i < injectTemp.size() - 1; i++) {
+                robotPath.add(injectTemp.get(i));
+            }
+        }
+        for (Vector v : robotPath) {
+            System.out.println(v);
+        }
+        System.out.println("RPath Size: " + robotPath.size());
     }
 
 
     public static void main (String[] args) {
-        Path p = new Path(1, 2, 3);
+        Path p = new Path(1, 0.78, 0.001);
         PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 5, 0);
-        Vector start = new Vector(1,3);
-        Vector end = new Vector(3,9);
-        Vector currPos = new Vector(-3, 5);
+        Vector start = new Vector(0,0);
+        Vector end = new Vector(0,100);
+        Vector currPos = new Vector(2.88, .84);
         //System.out.print(path.calcIntersectionPoint(start, end, currPos, 5));
-        System.out.print(purePursuitTracker.calcVectorLookAheadPoint(start, end, currPos, 5).x);
-        System.out.print(purePursuitTracker.calcVectorLookAheadPoint(start, end, currPos, 5).y);
+        System.out.println(purePursuitTracker.calcVectorLookAheadPoint(start, end, currPos, 10));
 
     }
 

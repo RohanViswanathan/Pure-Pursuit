@@ -246,6 +246,11 @@ public class Vector {
         }
     }
 
+    @Override
+    public String toString() {
+        return "x: "+x+", y: "+y;
+    }
+
     static public double angleBetween(Vector a, Vector b) {
         double dot = dot(a, b);
         double amag = Math.sqrt(Math.pow(a.x, 2) + Math.pow(a.y, 2) + Math.pow(a.z, 2));

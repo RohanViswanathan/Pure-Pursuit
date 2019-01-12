@@ -3,8 +3,8 @@ package math;
 public class Vector {
 
     public double x, y, z;
-    public double velocity;
-    public double curvature;
+    private double velocity;
+    private double curvature;
 
     public Vector() {
 
@@ -56,7 +56,7 @@ public class Vector {
         this.curvature = curvature;
     }
 
-    public Vector get() {
+    public Vector duplicate() {
         return new Vector(x, y, z);
     }
 

@@ -8,8 +8,10 @@ import operation.Range;
 public class PurePursuitTracker {
 
     private Path p;
-    private double output = 0;
-    private double prevOutput = 0;
+    public double leftOutput = 0;
+    public double rightOutput = 0;
+    public double prevLeftOutput = 0;
+    public double prevRightOutput = 0;
     private int lastClosestPt = 0; //index in ArrayList
     private Vector currPos = new Vector(0, 0);
     private double stopDistance;
@@ -23,10 +25,12 @@ public class PurePursuitTracker {
         this.stopDistance = stopDistance;
     }
 
-    private double calculateFeedForward(double targetVel, double currVel) {
+    private double calculateFeedForward(double targetVel, double currVel, boolean right) {
         double targetAcc = (targetVel - currVel)/(Constants.loopTime);
         targetAcc = Range.clip(targetAcc, -maxAccel, maxAccel);
-        return (Constants.kV * rateLimiter(targetVel, Constants.maxAccel)) + (Constants.kA * targetAcc);
+        double rateLimitedVel = rateLimiter(targetVel, maxAccel, right);
+        System.out.println("limited target vel" + rateLimitedVel);
+        return (Constants.kV * rateLimitedVel) + (Constants.kA * targetAcc);
     }
 
     private double calculateFeedback(double targetVel, double currVel) {
@@ -39,7 +43,6 @@ public class PurePursuitTracker {
         int closestPointIndex = getClosestPointIndex(currPos);
         Vector lookaheadPt = new Vector(0, 0);
         for (int i = closestPointIndex; i < p.robotPath.size()-1; i++) {
-
             Vector startPt = p.robotPath.get(i);
             Vector endPt = p.robotPath.get(i+1);
             lookaheadPt = calcVectorLookAheadPoint(startPt, endPt, currPos, lookaheadDistance);
@@ -62,14 +65,24 @@ public class PurePursuitTracker {
         }
         System.out.println("LTV: " + leftTargetVel);
         System.out.println("RTV: " + rightTargetVel);
-        double rightFF = calculateFeedForward(rightTargetVel, currVel);
-        double leftFF = calculateFeedForward(leftTargetVel, currVel);
+        double rightFF = calculateFeedForward(rightTargetVel, currVel, true);
+        double leftFF = calculateFeedForward(leftTargetVel, currVel, false);
         double rightFB = calculateFeedback(rightTargetVel, currVel);
         double leftFB = calculateFeedback(leftTargetVel, currVel);
         System.out.println(leftFF);
         System.out.println(rightFF);
         double rightOutput = rightFF + rightFB;
         double leftOutput = leftFF + leftFB;
+        if (leftOutput > 1) {
+            double ratio = rightOutput / leftOutput;
+            leftOutput = 1;
+            rightOutput = ratio;
+        }
+        if (rightOutput > 1) {
+            double ratio = leftOutput / rightOutput;
+            rightOutput = 1;
+            leftOutput = ratio;
+        }
         if (getTotalPathDistance() - getCurrDistance(getClosestPointIndex(currPos)) <= stopDistance) {
             rightOutput = 0;
             leftOutput = 0;
@@ -79,11 +92,25 @@ public class PurePursuitTracker {
         System.out.print(leftOutput + "      :     " + rightOutput);
     }
 
-    private double rateLimiter(double input, double maxRate) {
+    private double rateLimiter(double input, double maxRate, boolean right) {
         double maxChange = Constants.loopTime * maxRate;
-        output += Range.clip(input - prevOutput, -maxChange, maxChange);
-        prevOutput = output;
-        return output;
+        System.out.println("max change " + maxChange);
+        if (right) {
+            System.out.println("input right " + input);
+            System.out.println("right output diff "+(input - prevRightOutput));
+            rightOutput += Range.clip(input - prevRightOutput, -maxChange, maxChange);
+            prevRightOutput = rightOutput;
+            System.out.println("right output "+rightOutput);
+            return rightOutput;
+        }
+        else {
+            System.out.println("input left " + input);
+            System.out.println("left output diff "+(input - prevLeftOutput));
+            leftOutput += Range.clip(input - prevLeftOutput, -maxChange, maxChange);
+            prevLeftOutput = leftOutput;
+            System.out.println("left output "+leftOutput);
+            return leftOutput;
+        }
     }
 
 

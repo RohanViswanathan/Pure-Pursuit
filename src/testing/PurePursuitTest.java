@@ -21,8 +21,12 @@ public class PurePursuitTest {
         p.addSegment(new Vector(0,0), new Vector(0, 1000));
         p.setTargetVelocities(Constants.maxVel, Constants.maxAccel, Constants.maxVelk);
         p.setCurvature();
-        poseEstimator.updatePose(3, 20);
-        purePursuitTracker.update(poseEstimator.getPose(), 5*12, 20);
+        poseEstimator.updatePose(3, 10);
+        purePursuitTracker.prevLeftOutput = 0;
+        purePursuitTracker.prevRightOutput = 0;
+        purePursuitTracker.leftOutput = 0;
+        purePursuitTracker.rightOutput = 0;
+        purePursuitTracker.update(poseEstimator.getPose(), 0, 10);
     }
 
 }

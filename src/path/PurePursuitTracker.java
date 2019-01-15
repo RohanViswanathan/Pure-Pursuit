@@ -1,7 +1,5 @@
 package path;
 
-import com.sun.tools.internal.jxc.ap.Const;
-import math.Vector;
 import operation.Constants;
 import operation.Range;
 
@@ -13,7 +11,7 @@ public class PurePursuitTracker {
     public double prevLeftOutput = 0;
     public double prevRightOutput = 0;
     private int lastClosestPt = 0; //index in ArrayList
-    private Vector currPos = new Vector(0, 0);
+    private frc.team3256.robot.math.Vector currPos = new frc.team3256.robot.math.Vector(0, 0);
     private double stopDistance;
     private double lookaheadDistance;
     private double maxVelocity = Constants.maxVel;
@@ -37,14 +35,14 @@ public class PurePursuitTracker {
         return Constants.kP * (targetVel - currVel);
     }
 
-    public void update(Vector currPose, double currVel, double heading) {
+    public void update(frc.team3256.robot.math.Vector currPose, double currVel, double heading) {
         this.currPos = currPose;
         System.out.println("current pose    "+currPose);
         int closestPointIndex = getClosestPointIndex(currPos);
-        Vector lookaheadPt = new Vector(0, 0);
+        frc.team3256.robot.math.Vector lookaheadPt = new frc.team3256.robot.math.Vector(0, 0);
         for (int i = closestPointIndex; i < p.robotPath.size()-1; i++) {
-            Vector startPt = p.robotPath.get(i);
-            Vector endPt = p.robotPath.get(i+1);
+            frc.team3256.robot.math.Vector startPt = p.robotPath.get(i);
+            frc.team3256.robot.math.Vector endPt = p.robotPath.get(i+1);
             lookaheadPt = calcVectorLookAheadPoint(startPt, endPt, currPos, lookaheadDistance);
             if (lookaheadPt.x != Double.MAX_VALUE && lookaheadPt.y != Double.MAX_VALUE) {
                 break;
@@ -114,10 +112,10 @@ public class PurePursuitTracker {
     }
 
 
-    private double calcIntersectionPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance) {
+    private double calcIntersectionPoint(frc.team3256.robot.math.Vector startPoint, frc.team3256.robot.math.Vector endPoint, frc.team3256.robot.math.Vector currPos, double lookaheadDistance) {
 
-        Vector d = Vector.sub(endPoint, startPoint);
-        Vector f = Vector.sub(startPoint, currPos);
+        frc.team3256.robot.math.Vector d = frc.team3256.robot.math.Vector.sub(endPoint, startPoint);
+        frc.team3256.robot.math.Vector f = frc.team3256.robot.math.Vector.sub(startPoint, currPos);
 
         double a = d.dot(d);
         double b = 2*f.dot(d);
@@ -150,13 +148,13 @@ public class PurePursuitTracker {
     }
 
 
-    private int getClosestPointIndex(Vector currPos) {
+    private int getClosestPointIndex(frc.team3256.robot.math.Vector currPos) {
         double shortestDistance = Double.MAX_VALUE;
         int closestPoint = 0;
         for (int i = lastClosestPt; i < p.robotPath.size(); i++) {
-            if (Vector.dist(p.robotPath.get(i), currPos) < shortestDistance) {
+            if (frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), currPos) < shortestDistance) {
                 closestPoint = i;
-                shortestDistance = Vector.dist(p.robotPath.get(i), currPos);
+                shortestDistance = frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), currPos);
             }
         }
         lastClosestPt = closestPoint;
@@ -164,13 +162,13 @@ public class PurePursuitTracker {
 
     }
 
-    public Vector calcVectorLookAheadPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance) {
+    public frc.team3256.robot.math.Vector calcVectorLookAheadPoint(frc.team3256.robot.math.Vector startPoint, frc.team3256.robot.math.Vector endPoint, frc.team3256.robot.math.Vector currPos, double lookaheadDistance) {
         double tIntersect = calcIntersectionPoint(startPoint, endPoint, currPos, lookaheadDistance);
         if (Double.isNaN(tIntersect)) {
-            return new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+            return new frc.team3256.robot.math.Vector(Double.MAX_VALUE, Double.MAX_VALUE);
         } else {
-            Vector vectorSegment = Vector.mult(Vector.sub(endPoint, startPoint, null).normalize(null), tIntersect);
-            Vector point = Vector.add(startPoint, vectorSegment);
+            frc.team3256.robot.math.Vector vectorSegment = frc.team3256.robot.math.Vector.mult(frc.team3256.robot.math.Vector.sub(endPoint, startPoint, null).normalize(null), tIntersect);
+            frc.team3256.robot.math.Vector point = frc.team3256.robot.math.Vector.add(startPoint, vectorSegment);
             return point;
         }
     }
@@ -178,7 +176,7 @@ public class PurePursuitTracker {
     private double getCurrDistance(int point) {
         double distance = 0;
         for (int i = point; i >= 1; i--) {
-            distance += Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
+            distance += frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
         }
 
         return distance;
@@ -187,7 +185,7 @@ public class PurePursuitTracker {
     private double getTotalPathDistance() {
         double distance = 0;
         for (int i = p.robotPath.size()-1; i >= 1; i--) {
-            distance += Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
+            distance += frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
         }
 
         return distance;

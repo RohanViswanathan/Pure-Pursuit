@@ -1,6 +1,5 @@
 package path;
 
-import math.Vector;
 import operation.Constants;
 import operation.Sign;
 
@@ -13,7 +12,7 @@ public class Path {
     double spacing = Constants.spacing; //spacing between points in inches
     double distance; //in inches
     double a, b, tolerance;
-    ArrayList<Vector> robotPath = new ArrayList<>();
+    ArrayList<frc.team3256.robot.math.Vector> robotPath = new ArrayList<>();
 
     public Path(double a, double b, double tolerance) {
         this.a = a;
@@ -22,20 +21,20 @@ public class Path {
         distance = 0;
     }
 
-    private void injectPoints(Vector startPt, Vector endPt, ArrayList<Vector> temp) {
+    private void injectPoints(frc.team3256.robot.math.Vector startPt, frc.team3256.robot.math.Vector endPt, ArrayList<frc.team3256.robot.math.Vector> temp) {
 
-        Vector vector = new Vector(Vector.sub(endPt, startPt, null));
+        frc.team3256.robot.math.Vector vector = new frc.team3256.robot.math.Vector(frc.team3256.robot.math.Vector.sub(endPt, startPt, null));
         double num_pts_that_fit = Math.ceil(vector.norm() / spacing);
-        Vector unitVector = vector.normalize(null);
+        frc.team3256.robot.math.Vector unitVector = vector.normalize(null);
         unitVector.mult(vector.norm() / num_pts_that_fit);
         for (int i = 0; i < num_pts_that_fit; i++) {
-            Vector newVector = Vector.mult(unitVector, i, null);
-            temp.add(Vector.add(startPt, newVector, null));
+            frc.team3256.robot.math.Vector newVector = frc.team3256.robot.math.Vector.mult(unitVector, i, null);
+            temp.add(frc.team3256.robot.math.Vector.add(startPt, newVector, null));
         }
         temp.add(endPt);
     }
 
-    private double [][] makeArray(ArrayList<Vector> pts) {
+    private double [][] makeArray(ArrayList<frc.team3256.robot.math.Vector> pts) {
 
         double [][] path = new double [pts.size()][2];
         for (int i = 0; i < pts.size(); i++) {
@@ -47,11 +46,11 @@ public class Path {
 
     }
 
-    private ArrayList<Vector> makeList(double [][] pts) {
+    private ArrayList<frc.team3256.robot.math.Vector> makeList(double [][] pts) {
 
-        ArrayList<Vector> path = new ArrayList<>();
+        ArrayList<frc.team3256.robot.math.Vector> path = new ArrayList<>();
         for (int i = 0; i < pts.length; i ++){
-            path.add(new Vector(pts[i][0], pts[i][1]));
+            path.add(new frc.team3256.robot.math.Vector(pts[i][0], pts[i][1]));
         }
 
         return path;
@@ -64,7 +63,7 @@ public class Path {
         return newArray;
     }
 
-    private ArrayList<Vector> smooth(ArrayList<Vector> vectorPath, double a, double b, double tolerance) {
+    private ArrayList<frc.team3256.robot.math.Vector> smooth(ArrayList<frc.team3256.robot.math.Vector> vectorPath, double a, double b, double tolerance) {
 
         double [][] path = makeArray(vectorPath);
 
@@ -92,14 +91,14 @@ public class Path {
     }
 
 
-    private double calculatePathCurvature(ArrayList<Vector> path, int point) {
-        Vector pt = new Vector(path.get(point));
-        Vector prevPt = new Vector(path.get(point - 1));
-        Vector nextPt = new Vector(path.get(point + 1));
+    private double calculatePathCurvature(ArrayList<frc.team3256.robot.math.Vector> path, int point) {
+        frc.team3256.robot.math.Vector pt = new frc.team3256.robot.math.Vector(path.get(point));
+        frc.team3256.robot.math.Vector prevPt = new frc.team3256.robot.math.Vector(path.get(point - 1));
+        frc.team3256.robot.math.Vector nextPt = new frc.team3256.robot.math.Vector(path.get(point + 1));
 
-        double productOfSides = Vector.dist(pt, prevPt) * Vector.dist(pt, nextPt) * Vector.dist(nextPt, prevPt);
-        double semiPerimeter = (Vector.dist(pt, prevPt) + Vector.dist(pt, nextPt) + Vector.dist(nextPt, prevPt))/2;
-        double triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - Vector.dist(pt, prevPt)) * (semiPerimeter - Vector.dist(pt, nextPt)) * (semiPerimeter - Vector.dist(nextPt, prevPt)));
+        double productOfSides = frc.team3256.robot.math.Vector.dist(pt, prevPt) * frc.team3256.robot.math.Vector.dist(pt, nextPt) * frc.team3256.robot.math.Vector.dist(nextPt, prevPt);
+        double semiPerimeter = (frc.team3256.robot.math.Vector.dist(pt, prevPt) + frc.team3256.robot.math.Vector.dist(pt, nextPt) + frc.team3256.robot.math.Vector.dist(nextPt, prevPt))/2;
+        double triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - frc.team3256.robot.math.Vector.dist(pt, prevPt)) * (semiPerimeter - frc.team3256.robot.math.Vector.dist(pt, nextPt)) * (semiPerimeter - frc.team3256.robot.math.Vector.dist(nextPt, prevPt)));
 
         double radius = (productOfSides)/(4 * triangleArea);
         double curvature = 1/radius;
@@ -107,7 +106,7 @@ public class Path {
         return curvature;
     }
 
-    private double calculateMaxVelocity(ArrayList<Vector> path, int point, double pathMaxVel, double k) {
+    private double calculateMaxVelocity(ArrayList<frc.team3256.robot.math.Vector> path, int point, double pathMaxVel, double k) {
         if (point > 0) {
 
             double curvature = calculatePathCurvature(path, point);
@@ -120,14 +119,14 @@ public class Path {
     public void setTargetVelocities(double maxVel, double maxAccel, double k) {
         robotPath.get(robotPath.size() - 1).setVelocity(0);
         for (int i = robotPath.size() - 2; i >= 0; i--) {
-            distance = Vector.dist(robotPath.get(i+1), robotPath.get(i));
+            distance = frc.team3256.robot.math.Vector.dist(robotPath.get(i+1), robotPath.get(i));
             double maxReachableVel = Math.sqrt(Math.pow(robotPath.get(i+1).getVelocity(),2) + (2 * maxAccel * distance));
             robotPath.get(i).setVelocity(Math.min(calculateMaxVelocity(robotPath, i, maxVel, k), maxReachableVel));
         }
     }
 
 
-    public double calculateCurvatureLookAheadArc(Vector currPos, double heading, Vector lookahead, double lookaheadDistance) {
+    public double calculateCurvatureLookAheadArc(frc.team3256.robot.math.Vector currPos, double heading, frc.team3256.robot.math.Vector lookahead, double lookaheadDistance) {
         double a = -Math.tan(heading);
         double b = 1;
         double c = (Math.tan(heading)*currPos.x) - currPos.y;
@@ -139,8 +138,8 @@ public class Path {
     }
 
 
-    public void addSegment(Vector start, Vector end) {
-        ArrayList<Vector> injectTemp = new ArrayList<>();
+    public void addSegment(frc.team3256.robot.math.Vector start, frc.team3256.robot.math.Vector end) {
+        ArrayList<frc.team3256.robot.math.Vector> injectTemp = new ArrayList<>();
         injectPoints(start, end, injectTemp);
         System.out.println(injectTemp);
         //ArrayList<Vector> smoothTemp = smooth(injectTemp, a, b, tolerance);
@@ -155,7 +154,7 @@ public class Path {
                 robotPath.add(injectTemp.get(i));
             }
         }
-        for (Vector v : robotPath) {
+        for (frc.team3256.robot.math.Vector v : robotPath) {
             System.out.println(v);
         }
         System.out.println("RPath Size: " + robotPath.size());
@@ -165,9 +164,9 @@ public class Path {
     public static void main (String[] args) {
         Path p = new Path(1, 0.78, 0.001);
         PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 5, 0);
-        Vector start = new Vector(0,0);
-        Vector end = new Vector(0,100);
-        Vector currPos = new Vector(2.88, .84);
+        frc.team3256.robot.math.Vector start = new frc.team3256.robot.math.Vector(0,0);
+        frc.team3256.robot.math.Vector end = new frc.team3256.robot.math.Vector(0,100);
+        frc.team3256.robot.math.Vector currPos = new frc.team3256.robot.math.Vector(2.88, .84);
         //System.out.print(path.calcIntersectionPoint(start, end, currPos, 5));
         System.out.println(purePursuitTracker.calcVectorLookAheadPoint(start, end, currPos, 10));
 

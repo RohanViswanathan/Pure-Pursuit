@@ -1,4 +1,4 @@
-package math;
+package frc.team3256.robot.math;
 
 public class Vector {
 

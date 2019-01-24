@@ -1,7 +1,11 @@
 package path;
 
+import math.Vector;
 import operation.Constants;
+import operation.DrivePower;
 import operation.Range;
+
+import java.util.Optional;
 
 public class PurePursuitTracker {
 
@@ -10,24 +14,56 @@ public class PurePursuitTracker {
     public double rightOutput = 0;
     public double prevLeftOutput = 0;
     public double prevRightOutput = 0;
-    private int lastClosestPt = 0; //index in ArrayList
-    private frc.team3256.robot.math.Vector currPos = new frc.team3256.robot.math.Vector(0, 0);
-    private double stopDistance;
+    public int lastClosestPt = 0; //index in ArrayList
+    private Vector currentPose = new Vector(0, 0);
     private double lookaheadDistance;
-    private double maxVelocity = Constants.maxVel;
     private double maxAccel = Constants.maxAccel;
 
-    public PurePursuitTracker(Path p, double lookaheadDistance, double stopDistance) {
+    public PurePursuitTracker(Path p, double lookaheadDistance) {
         this.p = p;
         this.lookaheadDistance = lookaheadDistance;
-        this.stopDistance = stopDistance;
+        p.initializePath();
     }
+
+    //updates the motor controller values
+
+    public DrivePower update(Vector currPose, double currVel, double heading) {
+        this.currentPose = currPose;
+        boolean onLastSegment = false;
+        int closestPointIndex = getClosestPointIndex(currentPose);
+        Vector lookaheadPt = new Vector(0, 0);
+        for (int i = closestPointIndex+1; i < p.robotPath.size(); i++) {
+            Vector startPt = p.robotPath.get(i-1);
+            Vector endPt = p.robotPath.get(i);
+            if (i == p.robotPath.size()-1) {
+                onLastSegment = true;
+            }
+            Optional<Vector> lookaheadPtOptional = calculateVectorLookAheadPoint(startPt, endPt, currentPose, lookaheadDistance, onLastSegment);
+            if (lookaheadPtOptional.isPresent()) {
+                lookaheadPt = lookaheadPtOptional.get();
+                break;
+            }
+        }
+        double curvature = p.calculateCurvatureLookAheadArc(currentPose, heading, lookaheadPt, lookaheadDistance);
+        double leftTargetVel = calculateLeftTargetVelocity(p.robotPath.get(getClosestPointIndex(currentPose)).getVelocity(), curvature);
+        double rightTargetVel = calculateRightTargetVelocity(p.robotPath.get(getClosestPointIndex(currentPose)).getVelocity(), curvature);
+        System.out.println("leftTargetVel: " + leftTargetVel);
+        System.out.println("rightTargetVel: " + rightTargetVel);
+
+        double rightFF = calculateFeedForward(rightTargetVel, currVel, true);
+        double leftFF = calculateFeedForward(leftTargetVel, currVel, false);
+        double rightFB = calculateFeedback(rightTargetVel, currVel);
+        double leftFB = calculateFeedback(leftTargetVel, currVel);
+
+        return new DrivePower(leftTargetVel, rightTargetVel);
+    }
+
+    //calculates the feedForward and the feedBack that will get passed through to the motors
 
     private double calculateFeedForward(double targetVel, double currVel, boolean right) {
         double targetAcc = (targetVel - currVel)/(Constants.loopTime);
         targetAcc = Range.clip(targetAcc, -maxAccel, maxAccel);
         double rateLimitedVel = rateLimiter(targetVel, maxAccel, right);
-        System.out.println("limited target vel" + rateLimitedVel);
         return (Constants.kV * rateLimitedVel) + (Constants.kA * targetAcc);
     }
 
@@ -35,87 +71,40 @@ public class PurePursuitTracker {
         return Constants.kP * (targetVel - currVel);
     }
 
-    public void update(frc.team3256.robot.math.Vector currPose, double currVel, double heading) {
-        this.currPos = currPose;
-        System.out.println("current pose    "+currPose);
-        int closestPointIndex = getClosestPointIndex(currPos);
-        frc.team3256.robot.math.Vector lookaheadPt = new frc.team3256.robot.math.Vector(0, 0);
-        for (int i = closestPointIndex; i < p.robotPath.size()-1; i++) {
-            frc.team3256.robot.math.Vector startPt = p.robotPath.get(i);
-            frc.team3256.robot.math.Vector endPt = p.robotPath.get(i+1);
-            lookaheadPt = calcVectorLookAheadPoint(startPt, endPt, currPos, lookaheadDistance);
-            if (lookaheadPt.x != Double.MAX_VALUE && lookaheadPt.y != Double.MAX_VALUE) {
-                break;
-            }
-        }
-        double curvature = p.calculateCurvatureLookAheadArc(currPos, heading, lookaheadPt, lookaheadDistance);
-        double leftTargetVel = getLeftTargetVelocity(p.robotPath.get(getClosestPointIndex(currPos)).getVelocity(), curvature);
-        double rightTargetVel = getRightTargetVelocity(p.robotPath.get(getClosestPointIndex(currPos)).getVelocity(), curvature);
-        if (leftTargetVel > maxVelocity) {
-            double ratio = rightTargetVel / leftTargetVel;
-            leftTargetVel = maxVelocity;
-            rightTargetVel = maxVelocity * ratio;
-        }
-        if (rightTargetVel > Constants.maxVel) {
-            double ratio = leftTargetVel / rightTargetVel;
-            rightTargetVel = maxVelocity;
-            leftTargetVel = maxVelocity * ratio;
-        }
-        System.out.println("LTV: " + leftTargetVel);
-        System.out.println("RTV: " + rightTargetVel);
-        double rightFF = calculateFeedForward(rightTargetVel, currVel, true);
-        double leftFF = calculateFeedForward(leftTargetVel, currVel, false);
-        double rightFB = calculateFeedback(rightTargetVel, currVel);
-        double leftFB = calculateFeedback(leftTargetVel, currVel);
-        System.out.println(leftFF);
-        System.out.println(rightFF);
-        double rightOutput = rightFF + rightFB;
-        double leftOutput = leftFF + leftFB;
-        if (leftOutput > 1) {
-            double ratio = rightOutput / leftOutput;
-            leftOutput = 1;
-            rightOutput = ratio;
-        }
-        if (rightOutput > 1) {
-            double ratio = leftOutput / rightOutput;
-            rightOutput = 1;
-            leftOutput = ratio;
-        }
-        if (getTotalPathDistance() - getCurrDistance(getClosestPointIndex(currPos)) <= stopDistance) {
-            rightOutput = 0;
-            leftOutput = 0;
-        }
-//        //run right motor to right output
-//        //run left motor to left output
-        System.out.print(leftOutput + "      :     " + rightOutput);
+    //calculates the left and right target velocities given the targetRobotVelocity
+
+    private double calculateLeftTargetVelocity(double targetRobotVelocity, double curvature) { //target velocity is from closest point on path
+        return targetRobotVelocity * ((2 + (Constants.robotTrack * curvature)))/2;
     }
+
+    private double calculateRightTargetVelocity(double targetRobotVelocity, double curvature) {
+        System.out.println("target robot velocity: " + targetRobotVelocity);
+        System.out.println("curvature " + curvature);
+        return targetRobotVelocity * ((2 - (Constants.robotTrack * curvature)))/2;
+    }
+
+    //limits the rate of change of a value given a maxRate parameter
 
     private double rateLimiter(double input, double maxRate, boolean right) {
         double maxChange = Constants.loopTime * maxRate;
-        System.out.println("max change " + maxChange);
         if (right) {
-            System.out.println("input right " + input);
-            System.out.println("right output diff "+(input - prevRightOutput));
             rightOutput += Range.clip(input - prevRightOutput, -maxChange, maxChange);
             prevRightOutput = rightOutput;
-            System.out.println("right output "+rightOutput);
             return rightOutput;
         }
         else {
-            System.out.println("input left " + input);
-            System.out.println("left output diff "+(input - prevLeftOutput));
             leftOutput += Range.clip(input - prevLeftOutput, -maxChange, maxChange);
             prevLeftOutput = leftOutput;
-            System.out.println("left output "+leftOutput);
             return leftOutput;
         }
     }
 
+    //calculates the intersection point between a point and a circle
 
-    private double calcIntersectionPoint(frc.team3256.robot.math.Vector startPoint, frc.team3256.robot.math.Vector endPoint, frc.team3256.robot.math.Vector currPos, double lookaheadDistance) {
+    private Optional<Double> calcIntersectionPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance) {
 
-        frc.team3256.robot.math.Vector d = frc.team3256.robot.math.Vector.sub(endPoint, startPoint);
-        frc.team3256.robot.math.Vector f = frc.team3256.robot.math.Vector.sub(startPoint, currPos);
+        Vector d = Vector.sub(endPoint, startPoint);
+        Vector f = Vector.sub(startPoint, currPos);
 
         double a = d.dot(d);
         double b = 2*f.dot(d);
@@ -123,8 +112,7 @@ public class PurePursuitTracker {
         double discriminant = Math.pow(b, 2) - (4 * a * c);
 
         if (discriminant < 0 ){
-            System.out.println("no intersections");
-            return Double.NaN;
+            return Optional.empty();
         }
 
         else {
@@ -133,73 +121,75 @@ public class PurePursuitTracker {
             double t2 = (-b + discriminant)/(2 * a);
 
             if (t1 >= 0 && t1 <= 1) {
-                System.out.println("t1");
-                return t1;
+                return Optional.of(t1);
             }
             if (t2 >= 0 && t2 <= 1) {
-                System.out.println("t2");
-                return t2;
+                return Optional.of(t2);
             }
 
         }
 
-        System.out.println("no intersections 2");
-        return Double.NaN;
+        return Optional.empty();
     }
 
+    //uses the calculated intersection point to get a Vector value on the path that is the lookahead point
 
-    private int getClosestPointIndex(frc.team3256.robot.math.Vector currPos) {
+    public Optional<Vector> calculateVectorLookAheadPoint(Vector startPoint, Vector endPoint, Vector currPos, double lookaheadDistance, boolean onLastSegment) {
+        Optional<Double> tIntersect = calcIntersectionPoint(startPoint, endPoint, currPos, lookaheadDistance);
+        if (tIntersect.isEmpty() && onLastSegment) {
+            return Optional.of(p.robotPath.get(p.robotPath.size()-1));
+        }
+        else if (tIntersect.isEmpty() && !onLastSegment) {
+            return Optional.empty();
+        }
+        else{
+            Vector intersectVector = Vector.sub(endPoint, startPoint, null);
+            Vector vectorSegment = Vector.mult(intersectVector, tIntersect.get());
+            Vector point = Vector.add(startPoint, vectorSegment);
+            return Optional.of(point);
+        }
+    }
+
+    //gets the index of the closest point
+
+    private int getClosestPointIndex(Vector currPos) {
         double shortestDistance = Double.MAX_VALUE;
         int closestPoint = 0;
         for (int i = lastClosestPt; i < p.robotPath.size(); i++) {
-            if (frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), currPos) < shortestDistance) {
+            if (Vector.dist(p.robotPath.get(i), currPos) < shortestDistance) {
                 closestPoint = i;
-                shortestDistance = frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), currPos);
+                shortestDistance = Vector.dist(p.robotPath.get(i), currPos);
             }
         }
         lastClosestPt = closestPoint;
         return closestPoint;
-
     }
 
-    public frc.team3256.robot.math.Vector calcVectorLookAheadPoint(frc.team3256.robot.math.Vector startPoint, frc.team3256.robot.math.Vector endPoint, frc.team3256.robot.math.Vector currPos, double lookaheadDistance) {
-        double tIntersect = calcIntersectionPoint(startPoint, endPoint, currPos, lookaheadDistance);
-        if (Double.isNaN(tIntersect)) {
-            return new frc.team3256.robot.math.Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        } else {
-            frc.team3256.robot.math.Vector vectorSegment = frc.team3256.robot.math.Vector.mult(frc.team3256.robot.math.Vector.sub(endPoint, startPoint, null).normalize(null), tIntersect);
-            frc.team3256.robot.math.Vector point = frc.team3256.robot.math.Vector.add(startPoint, vectorSegment);
-            return point;
+    public int getClosestPoint(Vector currentPose) {
+        double leastDistance = Double.MAX_VALUE;
+        int closestPointIndex = lastClosestPt+1;
+        for (int startVectorIndex = closestPointIndex; startVectorIndex < p.robotPath.size()-1; startVectorIndex++) {
+            Vector startVector = p.robotPath.get(startVectorIndex);
+            Vector endVector = p.robotPath.get(startVectorIndex + 1);
+            Vector endToStart = Vector.sub(endVector, startVector, null);
+            Vector startToEnd = Vector.sub(startVector, endVector, null);
+            Vector startToPose = Vector.sub(startVector, currentPose, null);
+            Vector endToPose = Vector.sub(endVector, currentPose, null);
+            double endAngle = Vector.angleBetween(endToPose, endToStart);
+            double startAngle = Vector.angleBetween(startToPose, startToEnd);
+            double piOver2 = Math.PI/2;
+            if (endAngle < piOver2 && startAngle < piOver2) {
+                endToStart.normalize();
+                double dot = endToPose.dot(endToStart);
+                Vector perpendicular = Vector.mult(endToStart, dot);
+                double distance = Vector.sub(currentPose, perpendicular, null).norm();
+                if (distance < leastDistance) {
+                    leastDistance = distance;
+                    closestPointIndex = startVectorIndex+1;
+                }
+            }
         }
-    }
-
-    private double getCurrDistance(int point) {
-        double distance = 0;
-        for (int i = point; i >= 1; i--) {
-            distance += frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
-        }
-
-        return distance;
-    }
-
-    private double getTotalPathDistance() {
-        double distance = 0;
-        for (int i = p.robotPath.size()-1; i >= 1; i--) {
-            distance += frc.team3256.robot.math.Vector.dist(p.robotPath.get(i), p.robotPath.get(i - 1));
-        }
-
-        return distance;
-    }
-
-
-    private double getLeftTargetVelocity(double targetRobotVelocity, double curvature) { //target velocity is from closest point on path
-        System.out.println("trv: " + targetRobotVelocity);
-        System.out.println("curvature " + curvature);
-        return targetRobotVelocity * ((2 + (Constants.robotTrack * curvature)))/2;
-    }
-
-    private double getRightTargetVelocity(double targetRobotVelocity, double curvature) {
-        return targetRobotVelocity * ((2 - (Constants.robotTrack * curvature)))/2;
+        return closestPointIndex;
     }
 
 

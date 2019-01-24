@@ -2,11 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27565d80-429e-48df-8209-71feec2965cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/operation/DrivePower.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/math/Kinematics.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/math/RigidTransform.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/math/Rotation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/math/Translation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/math/Twist.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/math/Vector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/math/Vector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/Path.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/Path.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/PurePursuitTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/PurePursuitTracker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/math/Vector.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/odometry/PoseEstimator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/operation/Constants.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/operation/Range.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/operation/Sign.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/path/Path.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/path/PurePursuitTracker.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Pure-Pursuit/testing/PurePursuitTest.class" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,24 +28,25 @@
     <session id="-432889874">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="5" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.opened" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="iml" value="2" />
-          <entry key="java" value="15" />
+          <entry key="java" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="IDEA_MODULE" value="2" />
-          <entry key="JAVA" value="15" />
+          <entry key="JAVA" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
@@ -55,20 +65,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/math/Vector.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3450">
-              <caret line="262" selection-start-line="262" selection-end-line="262" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/path/Path.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="166" column="86" lean-forward="true" selection-start-line="166" selection-start-column="86" selection-end-line="166" selection-end-column="86" />
+            <state relative-caret-position="255">
+              <caret line="17" column="19" lean-forward="true" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -77,41 +78,30 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/path/PurePursuitTracker.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="164" column="42" selection-start-line="164" selection-start-column="42" selection-end-line="164" selection-end-column="42" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1338#1339#0" expanded="true" />
-                <element signature="e#1397#1398#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/operation/DrivePower.java">
+        <entry file="file://$PROJECT_DIR$/src/math/Rotation.java">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/src.zip!/java/util/ArrayList.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5940">
-              <caret line="434" selection-start-line="434" selection-end-line="434" />
-            </state>
-          </provider>
+        <entry file="file://$PROJECT_DIR$/src/math/RigidTransform.java">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/testing/PurePursuitTest.java">
+        <entry file="file://$PROJECT_DIR$/src/math/Translation.java">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/math/Twist.java">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/math/Kinematics.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="27" column="43" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="210">
+              <caret line="14" column="40" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -204,6 +194,7 @@
         <option value="$PROJECT_DIR$/src/operation/DrivePower.java" />
         <option value="$PROJECT_DIR$/src/path/PurePursuitTracker.java" />
         <option value="$PROJECT_DIR$/src/path/Path.java" />
+        <option value="$PROJECT_DIR$/src/math/Kinematics.java" />
       </list>
     </option>
   </component>
@@ -218,8 +209,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -256,16 +245,12 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="path" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="Pure Pursuit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Pure-Pursuit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="testing" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -279,6 +264,9 @@
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="operation" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/math" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -348,7 +336,7 @@
     <frame x="30" y="63" width="1400" height="837" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26067746" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26804122" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -425,6 +413,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/path/PurePursuitTracker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2415">
+          <caret line="164" column="42" selection-start-line="164" selection-start-column="42" selection-end-line="164" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/operation/DrivePower.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -437,7 +435,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/testing/PurePursuitTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
+        <state relative-caret-position="345">
           <caret line="27" column="43" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -473,22 +471,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/path/PurePursuitTracker.java">
+    <entry file="file://$PROJECT_DIR$/src/math/Rotation.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/math/RigidTransform.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/math/Translation.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/math/Twist.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/math/Kinematics.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="164" column="42" selection-start-line="164" selection-start-column="42" selection-end-line="164" selection-end-column="42" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1338#1339#0" expanded="true" />
-            <element signature="e#1397#1398#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="210">
+          <caret line="14" column="40" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/path/Path.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="166" column="86" lean-forward="true" selection-start-line="166" selection-start-column="86" selection-end-line="166" selection-end-column="86" />
+        <state relative-caret-position="255">
+          <caret line="17" column="19" lean-forward="true" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

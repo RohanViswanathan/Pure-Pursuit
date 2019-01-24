@@ -18,7 +18,10 @@ public class PurePursuitTest {
         Path p = new Path(Constants.a, Constants.b, Constants.spacing, Constants.tolerance);
         PurePursuitTracker purePursuitTracker = new PurePursuitTracker(p, 15);
         PoseEstimator poseEstimator = PoseEstimator.getInstance();
-        p.addSegment(new Vector(0,0), new Vector(0, 1000));
+        p.addSegment(new Vector(0,0), new Vector(0, 30));
+        p.addSegment(new Vector(0,30), new Vector(30, 60));
+        p.addSegment(new Vector(30, 60), new Vector(30, 80));
+        p.addSegment(new Vector(30, 80), new Vector(30, 100));
         p.addLastPoint();
         p.setTargetVelocities(Constants.maxVel, Constants.maxAccel, Constants.maxVelk);
         p.setCurvatures();
